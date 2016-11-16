@@ -2,7 +2,7 @@
 stlinkserialNo=5639E3C9
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=1157271747
+Checksum=-1800764461
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -24,11 +24,11 @@ ShowArgs=0
 MixedMode=1
 [SWOTraceHWSettings]
 OverrideDefaultClocks=0
-CpuClock=8000000
+CpuClock=48000000
 ClockAutoDetect=0
 ClockWanted=2000000
 JtagSpeed=2000000
-Prescaler=4
+Prescaler=24
 TimeStampPrescIndex=0
 TimeStampPrescData=0
 PcSampCYCTAP=1
