@@ -1,4 +1,4 @@
-"C:\Users\engenharia\Documents\Diego Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\Drivers\CMSIS\Device\ST\STM32F0xx\Source\Templates\system_stm32f0xx.c"
+"C:\Users\engenharia\Documents\Diego Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\Src\system_stm32f0xx.c"
 -std=c99
 -ferror-limit=100
 -I

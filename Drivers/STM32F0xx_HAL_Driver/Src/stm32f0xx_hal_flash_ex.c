@@ -2,8 +2,6 @@
   ******************************************************************************
   * @file    stm32f0xx_hal_flash_ex.c
   * @author  MCD Application Team
-  * @version V1.3.0
-  * @date    26-June-2015
   * @brief   Extended FLASH HAL module driver.
   *    
   *          This file provides firmware functions to manage the following 
@@ -30,7 +28,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -82,7 +80,7 @@ extern FLASH_ProcessTypeDef pFlash;
   */
   
 /** @defgroup FLASHEx FLASHEx
-  * @brief FLASH Extended HAL module driver
+  * @brief FLASH HAL Extension module driver
   * @{
   */
 
@@ -91,7 +89,9 @@ extern FLASH_ProcessTypeDef pFlash;
 /** @defgroup FLASHEx_Private_Constants FLASHEx Private Constants
  * @{
  */
-#define FLASH_POSITION_IWDGSW_BIT   (uint32_t)8
+#define FLASH_POSITION_IWDGSW_BIT        8U
+#define FLASH_POSITION_OB_USERDATA0_BIT  16U
+#define FLASH_POSITION_OB_USERDATA1_BIT  24U
 /**
   * @}
   */
@@ -111,7 +111,7 @@ extern FLASH_ProcessTypeDef pFlash;
  */
 /* Erase operations */
 static void              FLASH_MassErase(void);
-       void              FLASH_PageErase(uint32_t PageAddress);
+//void    FLASH_PageErase(uint32_t PageAddress);
 
 /* Option bytes control */
 static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage);
@@ -120,7 +120,7 @@ static HAL_StatusTypeDef FLASH_OB_RDP_LevelConfig(uint8_t ReadProtectLevel);
 static HAL_StatusTypeDef FLASH_OB_UserConfig(uint8_t UserConfig);
 static HAL_StatusTypeDef FLASH_OB_ProgramData(uint32_t Address, uint8_t Data);
 static uint32_t          FLASH_OB_GetWRP(void);
-static uint8_t           FLASH_OB_GetRDP(void);
+static uint32_t          FLASH_OB_GetRDP(void);
 static uint8_t           FLASH_OB_GetUser(void);
 
 /**
@@ -132,13 +132,25 @@ static uint8_t           FLASH_OB_GetUser(void);
   * @{
   */
   
-/** @defgroup FLASHEx_Exported_Functions_Group1 Extended Input and Output operation functions
-  * @brief      I/O operation functions
+/** @defgroup FLASHEx_Exported_Functions_Group1 FLASHEx Memory Erasing functions
+ *  @brief   FLASH Memory Erasing functions
   *
 @verbatim   
- ===============================================================================
-                      ##### IO operation functions #####
- ===============================================================================  
+  ==============================================================================
+                ##### FLASH Erasing Programming functions ##### 
+  ==============================================================================
+
+    [..] The FLASH Memory Erasing functions, includes the following functions:
+    (+) @ref HAL_FLASHEx_Erase: return only when erase has been done
+    (+) @ref HAL_FLASHEx_Erase_IT: end of erase is done when @ref HAL_FLASH_EndOfOperationCallback 
+        is called with parameter 0xFFFFFFFF
+
+    [..] Any operation of erase should follow these steps:
+    (#) Call the @ref HAL_FLASH_Unlock() function to enable the flash control register and 
+        program memory access.
+    (#) Call the desired function to erase page.
+    (#) Call the @ref HAL_FLASH_Lock() to disable the flash program memory access 
+       (recommended to protect the FLASH memory against possible unwanted operation).
 
 @endverbatim
   * @{
@@ -147,12 +159,14 @@ static uint8_t           FLASH_OB_GetUser(void);
 
 /**
   * @brief  Perform a mass erase or erase the specified FLASH memory pages
-  * @note   The function HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
-  *         The function HAL_FLASH_Lock() should be called after to lock the FLASH interface
-  * @param[in]  pEraseInit: pointer to an FLASH_EraseInitTypeDef structure that
+  * @note   To correctly run this function, the @ref HAL_FLASH_Unlock() function
+  *         must be called before.
+  *         Call the @ref HAL_FLASH_Lock() to disable the flash memory access 
+  *         (recommended to protect the FLASH memory against possible unwanted operation)
+  * @param[in]  pEraseInit pointer to an FLASH_EraseInitTypeDef structure that
   *         contains the configuration information for the erasing.
   *
-  * @param[out]  PageError: pointer to variable  that
+  * @param[out]  PageError pointer to variable  that
   *         contains the configuration information on faulty page in case of error
   *         (0xFFFFFFFF means that all the pages have been correctly erased)
   *
@@ -161,7 +175,7 @@ static uint8_t           FLASH_OB_GetUser(void);
 HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError)
 {
   HAL_StatusTypeDef status = HAL_ERROR;
-  uint32_t address = 0;
+  uint32_t address = 0U;
 
   /* Process Locked */
   __HAL_LOCK(&pFlash);
@@ -197,11 +211,11 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t
       if (FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE) == HAL_OK)
       {
         /*Initialization of PageError variable*/
-        *PageError = 0xFFFFFFFF;
+        *PageError = 0xFFFFFFFFU;
         
-        /* Erase by page by page to be done*/
+        /* Erase page by page to be done*/
         for(address = pEraseInit->PageAddress;
-            address < (pEraseInit->PageAddress + (pEraseInit->NbPages)*FLASH_PAGE_SIZE);
+            address < ((pEraseInit->NbPages * FLASH_PAGE_SIZE) + pEraseInit->PageAddress);
             address += FLASH_PAGE_SIZE)
         {
           FLASH_PageErase(address);
@@ -229,10 +243,12 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t
 }
 
 /**
-  * @brief  Perform a mass erase or erase the specified FLASH memory sectors with interrupt enabled
-  * @note   The function HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
-  *         The function HAL_FLASH_Lock() should be called after to lock the FLASH interface
-  * @param  pEraseInit: pointer to an FLASH_EraseInitTypeDef structure that
+  * @brief  Perform a mass erase or erase the specified FLASH memory pages with interrupt enabled
+  * @note   To correctly run this function, the @ref HAL_FLASH_Unlock() function
+  *         must be called before.
+  *         Call the @ref HAL_FLASH_Lock() to disable the flash memory access 
+  *         (recommended to protect the FLASH memory against possible unwanted operation)
+  * @param  pEraseInit pointer to an FLASH_EraseInitTypeDef structure that
   *         contains the configuration information for the erasing.
   *
   * @retval HAL_StatusTypeDef HAL Status
@@ -254,7 +270,7 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit)
   assert_param(IS_FLASH_TYPEERASE(pEraseInit->TypeErase));
 
   /* Enable End of FLASH Operation and Error source interrupts */
-  __HAL_FLASH_ENABLE_IT((FLASH_IT_EOP | FLASH_IT_ERR));
+  __HAL_FLASH_ENABLE_IT(FLASH_IT_EOP | FLASH_IT_ERR);
 
   if (pEraseInit->TypeErase == FLASH_TYPEERASE_MASSERASE)
   {
@@ -284,17 +300,17 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit)
 /**
   * @}
   */
-    
-/** @defgroup FLASHEx_Exported_Functions_Group2 Extended Peripheral Control functions
-  * @brief      Peripheral Control functions
+
+/** @defgroup FLASHEx_Exported_Functions_Group2 Option Bytes Programming functions
+ *  @brief   Option Bytes Programming functions
   *
 @verbatim   
- ===============================================================================
-                      ##### Peripheral Control functions #####
- ===============================================================================  
+  ==============================================================================
+                ##### Option Bytes Programming functions ##### 
+  ==============================================================================  
     [..]
     This subsection provides a set of functions allowing to control the FLASH 
-    memory operations.
+    option bytes operations.
 
 @endverbatim
   * @{
@@ -303,9 +319,9 @@ HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit)
 /**
   * @brief  Erases the FLASH option bytes.
   * @note   This functions erases all option bytes except the Read protection (RDP).
-  *         The function HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
-  *         The function HAL_FLASH_OB_Unlock() should be called before to unlock the options bytes
-  *         The function HAL_FLASH_OB_Launch() should be called after to force the reload of the options bytes
+  *         The function @ref HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
+  *         The function @ref HAL_FLASH_OB_Unlock() should be called before to unlock the options bytes
+  *         The function @ref HAL_FLASH_OB_Launch() should be called after to force the reload of the options bytes
   *         (system reset will occur)
   * @retval HAL status
   */
@@ -349,12 +365,12 @@ HAL_StatusTypeDef HAL_FLASHEx_OBErase(void)
 
 /**
   * @brief  Program option bytes
-  * @note   The function HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
-  *         The function HAL_FLASH_OB_Unlock() should be called before to unlock the options bytes
-  *         The function HAL_FLASH_OB_Launch() should be called after to force the reload of the options bytes
+  * @note   The function @ref HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
+  *         The function @ref HAL_FLASH_OB_Unlock() should be called before to unlock the options bytes
+  *         The function @ref HAL_FLASH_OB_Launch() should be called after to force the reload of the options bytes
   *         (system reset will occur)
   *
-  * @param  pOBInit: pointer to an FLASH_OBInitStruct structure that
+  * @param  pOBInit pointer to an FLASH_OBInitStruct structure that
   *         contains the configuration information for the programming.
   *
   * @retval HAL_StatusTypeDef HAL Status
@@ -362,6 +378,9 @@ HAL_StatusTypeDef HAL_FLASHEx_OBErase(void)
 HAL_StatusTypeDef HAL_FLASHEx_OBProgram(FLASH_OBProgramInitTypeDef *pOBInit)
 {
   HAL_StatusTypeDef status = HAL_ERROR;
+
+  /* Process Locked */
+  __HAL_LOCK(&pFlash);
 
   /* Check the parameters */
   assert_param(IS_OPTIONBYTE(pOBInit->OptionType));
@@ -380,32 +399,59 @@ HAL_StatusTypeDef HAL_FLASHEx_OBProgram(FLASH_OBProgramInitTypeDef *pOBInit)
       /* Disable of Write protection on the selected page */
       status = FLASH_OB_DisableWRP(pOBInit->WRPPage);
     }
+    if (status != HAL_OK)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(&pFlash);
+      return status;
+    }
   }
 
   /* Read protection configuration */
   if((pOBInit->OptionType & OPTIONBYTE_RDP) == OPTIONBYTE_RDP)
   {
     status = FLASH_OB_RDP_LevelConfig(pOBInit->RDPLevel);
+    if (status != HAL_OK)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(&pFlash);
+      return status;
+    }
   }
 
   /* USER configuration */
   if((pOBInit->OptionType & OPTIONBYTE_USER) == OPTIONBYTE_USER)
   {
     status = FLASH_OB_UserConfig(pOBInit->USERConfig);
+    if (status != HAL_OK)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(&pFlash);
+      return status;
+    }
   }
 
   /* DATA configuration*/
   if((pOBInit->OptionType & OPTIONBYTE_DATA) == OPTIONBYTE_DATA)
   {
     status = FLASH_OB_ProgramData(pOBInit->DATAAddress, pOBInit->DATAData);
+    if (status != HAL_OK)
+    {
+      /* Process Unlocked */
+      __HAL_UNLOCK(&pFlash);
+      return status;
+    }
   }
+
+  /* Process Unlocked */
+  __HAL_UNLOCK(&pFlash);
 
   return status;
 }
 
 /**
   * @brief  Get the Option byte configuration
-  * @param  pOBInit: pointer to an FLASH_OBInitStruct structure that
+  * @param  pOBInit pointer to an FLASH_OBInitStruct structure that
   *         contains the configuration information for the programming.
   *
   * @retval None
@@ -425,6 +471,32 @@ void HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit)
 }
 
 /**
+  * @brief  Get the Option byte user data
+  * @param  DATAAdress Address of the option byte DATA
+  *          This parameter can be one of the following values:
+  *            @arg @ref OB_DATA_ADDRESS_DATA0
+  *            @arg @ref OB_DATA_ADDRESS_DATA1
+  * @retval Value programmed in USER data
+  */
+uint32_t HAL_FLASHEx_OBGetUserData(uint32_t DATAAdress)
+{
+  uint32_t value = 0U;
+  
+  if (DATAAdress == OB_DATA_ADDRESS_DATA0)
+  {
+    /* Get value programmed in OB USER Data0 */
+    value = READ_BIT(FLASH->OBR, FLASH_OBR_DATA0) >> FLASH_POSITION_OB_USERDATA0_BIT;
+  }
+  else
+  {
+    /* Get value programmed in OB USER Data1 */
+    value = READ_BIT(FLASH->OBR, FLASH_OBR_DATA1) >> FLASH_POSITION_OB_USERDATA1_BIT;
+  }
+  
+  return value;
+}
+
+/**
   * @}
   */
 
@@ -439,7 +511,7 @@ void HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit)
 /**
   * @brief  Full erase of FLASH memory Bank 
   *
-  * @retval HAL Status
+  * @retval None
   */
 static void FLASH_MassErase(void)
 {
@@ -458,22 +530,22 @@ static void FLASH_MassErase(void)
   *         it is not possible to program or erase the flash page i if
   *         debug features are connected or boot code is executed in RAM, even if nWRPi = 1 
   * 
-  * @param  WriteProtectPage: specifies the page(s) to be write protected.
+  * @param  WriteProtectPage specifies the page(s) to be write protected.
   *         The value of this parameter depend on device used within the same series 
   * @retval HAL status 
   */
 static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 {
   HAL_StatusTypeDef status = HAL_OK;
-  uint16_t WRP0_Data = 0xFFFF;
+  uint16_t WRP0_Data = 0xFFFFU;
 #if defined(OB_WRP1_WRP1)
-  uint16_t WRP1_Data = 0xFFFF;
+  uint16_t WRP1_Data = 0xFFFFU;
 #endif /* OB_WRP1_WRP1 */
 #if defined(OB_WRP2_WRP2)
-  uint16_t WRP2_Data = 0xFFFF;
+  uint16_t WRP2_Data = 0xFFFFU;
 #endif /* OB_WRP2_WRP2 */
 #if defined(OB_WRP3_WRP3)
-  uint16_t WRP3_Data = 0xFFFF;
+  uint16_t WRP3_Data = 0xFFFFU;
 #endif /* OB_WRP3_WRP3 */
   
   /* Check the parameters */
@@ -482,26 +554,26 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
   /* Get current write protected pages and the new pages to be protected ******/
   WriteProtectPage = (uint32_t)(~((~FLASH_OB_GetWRP()) | WriteProtectPage));
   
-#if defined(OB_WRP_PAGES0TO31MASK)
-  WRP0_Data = (uint16_t)(WriteProtectPage & OB_WRP_PAGES0TO31MASK);
-#elif defined(OB_WRP_PAGES0TO15MASK)
+#if defined(OB_WRP_PAGES0TO15MASK)
   WRP0_Data = (uint16_t)(WriteProtectPage & OB_WRP_PAGES0TO15MASK);
+#elif defined(OB_WRP_PAGES0TO31MASK)
+  WRP0_Data = (uint16_t)(WriteProtectPage & OB_WRP_PAGES0TO31MASK);
 #endif /* OB_WRP_PAGES0TO31MASK */
   
-#if defined(OB_WRP_PAGES32TO63MASK)
-  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO63MASK) >> 8);
-#elif defined(OB_WRP_PAGES16TO31MASK)
-  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8);
+#if defined(OB_WRP_PAGES16TO31MASK)
+  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8U);
+#elif defined(OB_WRP_PAGES32TO63MASK)
+  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO63MASK) >> 8U);
 #endif /* OB_WRP_PAGES32TO63MASK */
  
 #if defined(OB_WRP_PAGES32TO47MASK)
-  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16);
+  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16U);
 #endif /* OB_WRP_PAGES32TO47MASK */
 
 #if defined(OB_WRP_PAGES48TO63MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO63MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO63MASK) >> 24U); 
 #elif defined(OB_WRP_PAGES48TO127MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24U); 
 #endif /* OB_WRP_PAGES48TO63MASK */
   
   /* Wait for last operation to be completed */
@@ -520,7 +592,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
       SET_BIT(FLASH->CR, FLASH_CR_OPTPG);
 
 #if defined(OB_WRP0_WRP0)
-      if(WRP0_Data != 0xFF)
+      if(WRP0_Data != 0xFFU)
       {
         OB->WRP0 &= WRP0_Data;
         
@@ -530,7 +602,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP0_WRP0 */
 
 #if defined(OB_WRP1_WRP1)
-      if((status == HAL_OK) && (WRP1_Data != 0xFF))
+      if((status == HAL_OK) && (WRP1_Data != 0xFFU))
       {
         OB->WRP1 &= WRP1_Data;
         
@@ -540,7 +612,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP1_WRP1 */
 
 #if defined(OB_WRP2_WRP2)
-      if((status == HAL_OK) && (WRP2_Data != 0xFF))
+      if((status == HAL_OK) && (WRP2_Data != 0xFFU))
       {
         OB->WRP2 &= WRP2_Data;
         
@@ -550,7 +622,7 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP2_WRP2 */
 
 #if defined(OB_WRP3_WRP3)
-      if((status == HAL_OK) && (WRP3_Data != 0xFF))
+      if((status == HAL_OK) && (WRP3_Data != 0xFFU))
       {
         OB->WRP3 &= WRP3_Data;
         
@@ -574,22 +646,22 @@ static HAL_StatusTypeDef FLASH_OB_EnableWRP(uint32_t WriteProtectPage)
   *         it is not possible to program or erase the flash page i if   
   *         debug features are connected or boot code is executed in RAM, even if nWRPi = 1 
   * 
-  * @param  WriteProtectPage: specifies the page(s) to be write unprotected.
+  * @param  WriteProtectPage specifies the page(s) to be write unprotected.
   *         The value of this parameter depend on device used within the same series 
   * @retval HAL status 
   */
 static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 {
   HAL_StatusTypeDef status = HAL_OK;
-  uint16_t WRP0_Data = 0xFFFF;
+  uint16_t WRP0_Data = 0xFFFFU;
 #if defined(OB_WRP1_WRP1)
-  uint16_t WRP1_Data = 0xFFFF;
+  uint16_t WRP1_Data = 0xFFFFU;
 #endif /* OB_WRP1_WRP1 */
 #if defined(OB_WRP2_WRP2)
-  uint16_t WRP2_Data = 0xFFFF;
+  uint16_t WRP2_Data = 0xFFFFU;
 #endif /* OB_WRP2_WRP2 */
 #if defined(OB_WRP3_WRP3)
-  uint16_t WRP3_Data = 0xFFFF;
+  uint16_t WRP3_Data = 0xFFFFU;
 #endif /* OB_WRP3_WRP3 */
   
   /* Check the parameters */
@@ -598,27 +670,28 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
   /* Get current write protected pages and the new pages to be unprotected ******/
   WriteProtectPage = (FLASH_OB_GetWRP() | WriteProtectPage);
 
-#if defined(OB_WRP_PAGES0TO31MASK)
-  WRP0_Data = (uint16_t)(WriteProtectPage & OB_WRP_PAGES0TO31MASK);
-#elif defined(OB_WRP_PAGES0TO15MASK)
+#if defined(OB_WRP_PAGES0TO15MASK)
   WRP0_Data = (uint16_t)(WriteProtectPage & OB_WRP_PAGES0TO15MASK);
+#elif defined(OB_WRP_PAGES0TO31MASK)
+  WRP0_Data = (uint16_t)(WriteProtectPage & OB_WRP_PAGES0TO31MASK);
 #endif /* OB_WRP_PAGES0TO31MASK */
   
-#if defined(OB_WRP_PAGES32TO63MASK)
-  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO63MASK) >> 8);
-#elif defined(OB_WRP_PAGES16TO31MASK)
-  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8);
+#if defined(OB_WRP_PAGES16TO31MASK)
+  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES16TO31MASK) >> 8U);
+#elif defined(OB_WRP_PAGES32TO63MASK)
+  WRP1_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO63MASK) >> 8U);
 #endif /* OB_WRP_PAGES32TO63MASK */
  
 #if defined(OB_WRP_PAGES32TO47MASK)
-  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16);
+  WRP2_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES32TO47MASK) >> 16U);
 #endif /* OB_WRP_PAGES32TO47MASK */
 
 #if defined(OB_WRP_PAGES48TO63MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO63MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO63MASK) >> 24U); 
 #elif defined(OB_WRP_PAGES48TO127MASK)
-  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24); 
+  WRP3_Data = (uint16_t)((WriteProtectPage & OB_WRP_PAGES48TO127MASK) >> 24U); 
 #endif /* OB_WRP_PAGES48TO63MASK */
+
     
   /* Wait for last operation to be completed */
   status = FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE);
@@ -635,7 +708,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
       SET_BIT(FLASH->CR, FLASH_CR_OPTPG);
 
 #if defined(OB_WRP0_WRP0)
-      if(WRP0_Data != 0xFF)
+      if(WRP0_Data != 0xFFU)
       {
         OB->WRP0 |= WRP0_Data;
         
@@ -645,7 +718,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP0_WRP0 */
 
 #if defined(OB_WRP1_WRP1)
-      if((status == HAL_OK) && (WRP1_Data != 0xFF))
+      if((status == HAL_OK) && (WRP1_Data != 0xFFU))
       {
         OB->WRP1 |= WRP1_Data;
         
@@ -655,7 +728,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP1_WRP1 */
 
 #if defined(OB_WRP2_WRP2)
-      if((status == HAL_OK) && (WRP2_Data != 0xFF))
+      if((status == HAL_OK) && (WRP2_Data != 0xFFU))
       {
         OB->WRP2 |= WRP2_Data;
         
@@ -665,7 +738,7 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 #endif /* OB_WRP2_WRP2 */
 
 #if defined(OB_WRP3_WRP3)
-      if((status == HAL_OK) && (WRP3_Data != 0xFF))
+      if((status == HAL_OK) && (WRP3_Data != 0xFFU))
       {
         OB->WRP3 |= WRP3_Data;
         
@@ -683,11 +756,11 @@ static HAL_StatusTypeDef FLASH_OB_DisableWRP(uint32_t WriteProtectPage)
 
 /**
   * @brief  Set the read protection level.
-  * @param  ReadProtectLevel: specifies the read protection level.
+  * @param  ReadProtectLevel specifies the read protection level.
   *         This parameter can be one of the following values:
-  *            @arg OB_RDP_LEVEL_0: No protection
-  *            @arg OB_RDP_LEVEL_1: Read protection of the memory
-  *            @arg OB_RDP_LEVEL_2: Full chip protection
+  *            @arg @ref OB_RDP_LEVEL_0 No protection
+  *            @arg @ref OB_RDP_LEVEL_1 Read protection of the memory
+  *            @arg @ref OB_RDP_LEVEL_2 Full chip protection
   * @note   Warning: When enabling OB_RDP level 2 it's no more possible to go back to level 1 or 0
   * @retval HAL status
   */
@@ -737,7 +810,7 @@ static HAL_StatusTypeDef FLASH_OB_RDP_LevelConfig(uint8_t ReadProtectLevel)
 /**
   * @brief  Program the FLASH User Option Byte.    
   * @note   Programming of the OB should be performed only after an erase (otherwise PGERR occurs)
-  * @param  UserConfig: The FLASH User Option Bytes values: IWDG_SW(Bit0), RST_STOP(Bit1), RST_STDBY(Bit2), nBOOT1(Bit4),
+  * @param  UserConfig The FLASH User Option Bytes values: IWDG_SW(Bit0), RST_STOP(Bit1), RST_STDBY(Bit2), nBOOT1(Bit4),
   *         VDDA_Analog_Monitoring(Bit5) and SRAM_Parity_Enable(Bit6). 
   *         For few devices, following option bytes are available: nBOOT0(Bit3) & BOOT_SEL(Bit7).
   * @retval HAL status
@@ -752,7 +825,7 @@ static HAL_StatusTypeDef FLASH_OB_UserConfig(uint8_t UserConfig)
   assert_param(IS_OB_STDBY_SOURCE((UserConfig&OB_STDBY_NO_RST)));
   assert_param(IS_OB_BOOT1((UserConfig&OB_BOOT1_SET)));
   assert_param(IS_OB_VDDA_ANALOG((UserConfig&OB_VDDA_ANALOG_ON)));
-  assert_param(IS_OB_SRAM_PARITY((UserConfig&OB_RAM_PARITY_CHECK_RESET)));
+  assert_param(IS_OB_SRAM_PARITY((UserConfig&OB_SRAM_PARITY_RESET)));
 #if defined(FLASH_OBR_BOOT_SEL)
   assert_param(IS_OB_BOOT_SEL((UserConfig&OB_BOOT_SEL_SET)));
   assert_param(IS_OB_BOOT0((UserConfig&OB_BOOT0_SET)));
@@ -772,8 +845,8 @@ static HAL_StatusTypeDef FLASH_OB_UserConfig(uint8_t UserConfig)
 #if defined(FLASH_OBR_BOOT_SEL)
     OB->USER = UserConfig;
 #else
-    OB->USER = (UserConfig | 0x88);
-#endif /* FLASH_OBR_BOOT_SEL */
+    OB->USER = (UserConfig | 0x88U);
+#endif
 
     /* Wait for last operation to be completed */
     status = FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE);
@@ -787,14 +860,14 @@ static HAL_StatusTypeDef FLASH_OB_UserConfig(uint8_t UserConfig)
 
 /**
   * @brief  Programs a half word at a specified Option Byte Data address.
-  * @note   The function HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
-  *         The function HAL_FLASH_OB_Unlock() should be called before to unlock the options bytes
-  *         The function HAL_FLASH_OB_Launch() should be called after to force the reload of the options bytes 
+  * @note   The function @ref HAL_FLASH_Unlock() should be called before to unlock the FLASH interface
+  *         The function @ref HAL_FLASH_OB_Unlock() should be called before to unlock the options bytes
+  *         The function @ref HAL_FLASH_OB_Launch() should be called after to force the reload of the options bytes 
   *         (system reset will occur)
   *         Programming of the OB should be performed only after an erase (otherwise PGERR occurs)
-  * @param  Address: specifies the address to be programmed.
+  * @param  Address specifies the address to be programmed.
   *         This parameter can be 0x1FFFF804 or 0x1FFFF806. 
-  * @param  Data: specifies the data to be programmed.
+  * @param  Data specifies the data to be programmed.
   * @retval HAL status
   */
 static HAL_StatusTypeDef FLASH_OB_ProgramData(uint32_t Address, uint8_t Data)
@@ -838,38 +911,38 @@ static uint32_t FLASH_OB_GetWRP(void)
 
 /**
   * @brief  Returns the FLASH Read Protection level.
-  * @retval FLASH ReadOut Protection Status:
+  * @retval FLASH RDP level
   *         This parameter can be one of the following values:
-  *            @arg OB_RDP_LEVEL_0: No protection
-  *            @arg OB_RDP_LEVEL_1: Read protection of the memory
-  *            @arg OB_RDP_LEVEL_2: Full chip protection
+  *            @arg @ref OB_RDP_LEVEL_0 No protection
+  *            @arg @ref OB_RDP_LEVEL_1 Read protection of the memory
+  *            @arg @ref OB_RDP_LEVEL_2 Full chip protection
   */
-static uint8_t FLASH_OB_GetRDP(void)
+static uint32_t FLASH_OB_GetRDP(void)
 {
-  uint8_t readstatus = OB_RDP_LEVEL_0;
+  uint32_t tmp_reg = 0U;
+  
+  /* Read RDP level bits */
+  tmp_reg = READ_BIT(FLASH->OBR, (FLASH_OBR_RDPRT1 | FLASH_OBR_RDPRT2));
 
-  if (HAL_IS_BIT_SET(FLASH->OBR, FLASH_OBR_RDPRT1))
+  if (tmp_reg == FLASH_OBR_RDPRT1)
   {
-    readstatus = OB_RDP_LEVEL_1;
+    return OB_RDP_LEVEL_1;
   }
-  else if (HAL_IS_BIT_SET(FLASH->OBR, FLASH_OBR_RDPRT2))
+  else if (tmp_reg == FLASH_OBR_RDPRT2)
   {
-    readstatus = OB_RDP_LEVEL_2;
+    return OB_RDP_LEVEL_2;
   }
   else 
   {
-    readstatus = OB_RDP_LEVEL_0;
+    return OB_RDP_LEVEL_0;
   }
-
-  return readstatus;
 }
 
 /**
   * @brief  Return the FLASH User Option Byte value.
-  * @retval The FLASH User Option Bytes values: FLASH_OBR_IWDG_SW(Bit0), FLASH_OBR_nRST_STOP(Bit1), 
-  *         FLASH_OBR_nRST_STDBY(Bit2), FLASH_OBR_nBOOT1(Bit4),
-  *         FLASH_OBR_VDDA_MONITOR(Bit5), FLASH_OBR_RAM_PARITY_CHECK(Bit6) and  FLASH_OBR_BOOT_SEL(Bit7) (*).
-  * @note (*) not present on all the devices.
+  * @retval  The FLASH User Option Bytes values: IWDG_SW(Bit0), RST_STOP(Bit1), RST_STDBY(Bit2), nBOOT1(Bit4),
+  *         VDDA_Analog_Monitoring(Bit5) and SRAM_Parity_Enable(Bit6). 
+  *         For few devices, following option bytes are available: nBOOT0(Bit3) & BOOT_SEL(Bit7).
   */
 static uint8_t FLASH_OB_GetUser(void)
 {
@@ -889,14 +962,13 @@ static uint8_t FLASH_OB_GetUser(void)
   * @{
   */
 
-
 /** @addtogroup FLASH_Private_Functions
  * @{
  */
 
 /**
   * @brief  Erase the specified FLASH memory page
-  * @param  PageAddress: FLASH page to erase
+  * @param  PageAddress FLASH page to erase
   *         The value of this parameter depend on device used within the same series      
   * 
   * @retval None
@@ -910,13 +982,11 @@ void FLASH_PageErase(uint32_t PageAddress)
   SET_BIT(FLASH->CR, FLASH_CR_PER);
   WRITE_REG(FLASH->AR, PageAddress);
   SET_BIT(FLASH->CR, FLASH_CR_STRT);
+  
+  /* Missing lines to Erase */
   FLASH_WaitForLastOperation((uint32_t)FLASH_TIMEOUT_VALUE);
   CLEAR_BIT(FLASH->CR, FLASH_CR_PER);//BFM
 }
-
-/**
-  * @}
-  */
 
 /**
   * @}

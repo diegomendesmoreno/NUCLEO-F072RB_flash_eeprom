@@ -1,0 +1,320 @@
+###############################################################################
+#
+# IAR ELF Linker V7.40.3.8902/W32 for ARM                 10/Jul/2017  15:20:41
+# Copyright 2007-2015 IAR Systems AB.
+#
+#    Output file  =  
+#        C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Exe\NUCLEO-F072RB_flash_eeprom.out
+#    Map file     =  
+#        C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom/List\NUCLEO-F072RB_flash_eeprom.map
+#    Command line =  
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\gpio.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\main.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\startup_stm32f072xb.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_cortex.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_dma.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_flash.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_flash_ex.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_gpio.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_i2c.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_i2c_ex.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_msp.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_pwr.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_pwr_ex.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_rcc.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_rcc_ex.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_tim.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_hal_tim_ex.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\stm32f0xx_it.o"
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj\system_stm32f0xx.o"
+#        --redirect _Printf=_PrintfFull --redirect _Scanf=_ScanfFull -o
+#        "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Exe\NUCLEO-F072RB_flash_eeprom.out"
+#        --map "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom/List\NUCLEO-F072RB_flash_eeprom.map"
+#        --config "C:\Users\engenharia\Documents\Diego
+#        Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM/stm32f072xb_flash.icf"
+#        --semihosting --entry __iar_program_start --vfe
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A1":  place at 0x08000000 { ro section .intvec };
+"P1":  place in [from 0x08000000 to 0x0801ffff] { ro };
+"P2":  place in [from 0x20000000 to 0x20003fff] { rw, block CSTACK, block HEAP };
+
+  Section            Kind        Address   Size  Object
+  -------            ----        -------   ----  ------
+"A1":                                      0xc0
+  .intvec            ro code  0x08000000   0xc0  startup_stm32f072xb.o [1]
+                            - 0x080000c0   0xc0
+
+"P1":                                     0xeb0
+  .text              ro code  0x080000c0  0x600  stm32f0xx_hal_rcc.o [1]
+  .text              ro code  0x080006c0   0x58  stm32f0xx_hal.o [1]
+  .text              ro code  0x08000718   0x34  ABImemcpy.o [4]
+  .text              ro code  0x0800074c   0xae  I32DivModFast.o [4]
+  .text              ro code  0x080007fa    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x080007fc   0x40  stm32f0xx_hal_msp.o [1]
+  .text              ro code  0x0800083c   0xa2  stm32f0xx_hal_cortex.o [1]
+  .text              ro code  0x080008de    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x080008e0    0x2  IntDivZer.o [4]
+  .text              ro code  0x080008e2    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x080008e4  0x1c2  stm32f0xx_hal_gpio.o [1]
+  .text              ro code  0x08000aa6    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000aa8  0x14c  stm32f0xx_hal_flash.o [1]
+  .text              ro code  0x08000bf4   0x1e  U64Shr.o [4]
+  .text              ro code  0x08000c12    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000c14   0xdc  main.o [1]
+  .text              ro code  0x08000cf0   0x84  gpio.o [1]
+  .text              ro code  0x08000d74   0x38  stm32f0xx_hal_flash_ex.o [1]
+  .text              ro code  0x08000dac   0x70  system_stm32f0xx.o [1]
+  .text              ro code  0x08000e1c   0x30  copy_init3.o [4]
+  .text              ro code  0x08000e4c   0x28  data_init.o [4]
+  .iar.init_table    const    0x08000e74   0x14  - Linker created -
+  .text              ro code  0x08000e88   0x1c  stm32f0xx_it.o [1]
+  .text              ro code  0x08000ea4   0x1a  cmain.o [4]
+  .text              ro code  0x08000ebe    0x4  low_level_init.o [3]
+  .text              ro code  0x08000ec2    0x8  exit.o [3]
+  .text              ro code  0x08000eca    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000ecc    0xa  cexit.o [4]
+  .text              ro code  0x08000ed6    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000ed8   0x14  exit.o [5]
+  .text              ro code  0x08000eec   0x10  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000efc    0xc  cstartup_M.o [4]
+  .text              ro code  0x08000f08    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f0a    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f0c    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f0e    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f10    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f12    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f14    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f16    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f18    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f1a    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f1c    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f1e    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f20    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f22    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f24    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f26    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f28    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f2a    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f2c    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f2e    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f30    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f32    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f34    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f36    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f38    0x2  startup_stm32f072xb.o [1]
+  .text              ro code  0x08000f3a    0x2  startup_stm32f072xb.o [1]
+  .rodata            const    0x08000f3c    0x0  copy_init3.o [4]
+  Initializer bytes  const    0x08000f3c   0x34  <for P2 s0>
+                            - 0x08000f70  0xeb0
+
+"P2":                                     0x438
+  P2 s0                       0x20000000   0x34  <Init block>
+    .bss             inited   0x20000000   0x20  stm32f0xx_hal_flash.o [1]
+    .bss             inited   0x20000020    0xc  main.o [1]
+    .data            inited   0x2000002c    0x4  system_stm32f0xx.o [1]
+    .bss             inited   0x20000030    0x4  stm32f0xx_hal.o [1]
+  CSTACK                      0x20000038  0x400  <Block>
+    CSTACK           uninit   0x20000038  0x400  <Block tail>
+                            - 0x20000438  0x438
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Copy (__iar_copy_init3)
+    1 source range, total size 0x34:
+          0x08000f3c  0x34
+    1 destination range, total size 0x34:
+          0x20000000  0x34
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                    ro code  ro data  rw data
+    ------                    -------  -------  -------
+C:\Users\engenharia\Documents\Diego Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj: [1]
+    gpio.o                        132
+    main.o                        220       12       12
+    startup_stm32f072xb.o         274
+    stm32f0xx_hal.o                88        4        4
+    stm32f0xx_hal_cortex.o        162
+    stm32f0xx_hal_flash.o         332       32       32
+    stm32f0xx_hal_flash_ex.o       56
+    stm32f0xx_hal_gpio.o          450
+    stm32f0xx_hal_msp.o            64
+    stm32f0xx_hal_rcc.o         1 536
+    stm32f0xx_it.o                 28
+    system_stm32f0xx.o            112        4        4
+    ---------------------------------------------------
+    Total:                      3 454       52       52
+
+command line: [2]
+    ---------------------------------------------------
+    Total:
+
+dl6M_tlf.a: [3]
+    exit.o                          8
+    low_level_init.o                4
+    ---------------------------------------------------
+    Total:                         12
+
+rt6M_tl.a: [4]
+    ABImemcpy.o                    52
+    I32DivModFast.o               174
+    IntDivZer.o                     2
+    U64Shr.o                       30
+    cexit.o                        10
+    cmain.o                        26
+    copy_init3.o                   48
+    cstartup_M.o                   12
+    data_init.o                    40
+    ---------------------------------------------------
+    Total:                        394
+
+shb_l.a: [5]
+    exit.o                         20
+    ---------------------------------------------------
+    Total:                         20
+
+    Linker created                          20    1 024
+-------------------------------------------------------
+    Grand Total:                3 880       72    1 076
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+.iar.init_table$$Base   0x08000e74          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x08000e88          --   Gb  - Linker created -
+?main                   0x08000ea5         Code  Gb  cmain.o [4]
+AHBPrescTable           0x08000e0c   0x10  Data  Gb  system_stm32f0xx.o [1]
+Address                 0x20000028    0x4  Data  Gb  main.o [1]
+CSTACK$$Base            0x20000038          --   Gb  - Linker created -
+CSTACK$$Limit           0x20000438          --   Gb  - Linker created -
+EXTI4_15_IRQHandler     0x08000e99    0xc  Code  Gb  stm32f0xx_it.o [1]
+FLASH_PageErase         0x08000d75   0x2c  Code  Gb  stm32f0xx_hal_flash_ex.o [1]
+FLASH_Program_HalfWord  0x08000b3d   0x16  Code  Lc  stm32f0xx_hal_flash.o [1]
+FLASH_SetErrorCode      0x08000ba5   0x34  Code  Lc  stm32f0xx_hal_flash.o [1]
+FLASH_WaitForLastOperation
+                        0x08000b53   0x4e  Code  Gb  stm32f0xx_hal_flash.o [1]
+HAL_FLASH_Lock          0x08000b23    0xe  Code  Gb  stm32f0xx_hal_flash.o [1]
+HAL_FLASH_Program       0x08000aa9   0x6c  Code  Gb  stm32f0xx_hal_flash.o [1]
+HAL_FLASH_Unlock        0x08000b15    0xe  Code  Gb  stm32f0xx_hal_flash.o [1]
+HAL_GPIO_EXTI_Callback  0x08000aa5    0x2  Code  Wk  stm32f0xx_hal_gpio.o [1]
+HAL_GPIO_EXTI_IRQHandler
+                        0x08000a6f   0x14  Code  Gb  stm32f0xx_hal_gpio.o [1]
+HAL_GPIO_Init           0x080008e5  0x17e  Code  Gb  stm32f0xx_hal_gpio.o [1]
+HAL_GPIO_WritePin       0x08000a63    0xc  Code  Gb  stm32f0xx_hal_gpio.o [1]
+HAL_GetTick             0x08000709    0x6  Code  Wk  stm32f0xx_hal.o [1]
+HAL_IncTick             0x080006ff    0xa  Code  Wk  stm32f0xx_hal.o [1]
+HAL_Init                0x080006c1   0x1a  Code  Gb  stm32f0xx_hal.o [1]
+HAL_InitTick            0x080006db   0x24  Code  Wk  stm32f0xx_hal.o [1]
+HAL_MspInit             0x080007fd   0x40  Code  Gb  stm32f0xx_hal_msp.o [1]
+HAL_NVIC_EnableIRQ      0x08000877    0xe  Code  Gb  stm32f0xx_hal_cortex.o [1]
+HAL_NVIC_SetPriority    0x0800086f    0x8  Code  Gb  stm32f0xx_hal_cortex.o [1]
+HAL_RCC_ClockConfig     0x080004b1  0x14e  Code  Gb  stm32f0xx_hal_rcc.o [1]
+HAL_RCC_GetHCLKFreq     0x0800066f    0x6  Code  Gb  stm32f0xx_hal_rcc.o [1]
+HAL_RCC_GetSysClockFreq
+                        0x08000605   0x6a  Code  Gb  stm32f0xx_hal_rcc.o [1]
+HAL_RCC_OscConfig       0x080000c1  0x3e4  Code  Gb  stm32f0xx_hal_rcc.o [1]
+HAL_SYSTICK_CLKSourceConfig
+                        0x080008ad   0x18  Code  Gb  stm32f0xx_hal_cortex.o [1]
+HAL_SYSTICK_Callback    0x080008dd    0x2  Code  Wk  stm32f0xx_hal_cortex.o [1]
+HAL_SYSTICK_Config      0x08000885   0x28  Code  Gb  stm32f0xx_hal_cortex.o [1]
+HAL_SYSTICK_IRQHandler  0x080008d5    0x8  Code  Gb  stm32f0xx_hal_cortex.o [1]
+HardFault_Handler       0x08000e8b    0x2  Code  Gb  stm32f0xx_it.o [1]
+MX_GPIO_Init            0x08000cf1   0x84  Code  Gb  gpio.o [1]
+NMI_Handler             0x08000e89    0x2  Code  Gb  stm32f0xx_it.o [1]
+NVIC_SetPriority        0x0800083d   0x32  Code  Lc  stm32f0xx_hal_cortex.o [1]
+RAM_read                0x20000020    0x8  Data  Gb  main.o [1]
+Region$$Table$$Base     0x08000e74          --   Gb  - Linker created -
+Region$$Table$$Limit    0x08000e88          --   Gb  - Linker created -
+SysTick_Handler         0x08000e8d    0xc  Code  Gb  stm32f0xx_it.o [1]
+SystemClock_Config      0x08000c95   0x5c  Code  Gb  main.o [1]
+SystemCoreClock         0x2000002c    0x4  Data  Gb  system_stm32f0xx.o [1]
+SystemInit              0x08000dad   0x48  Code  Gb  system_stm32f0xx.o [1]
+__ICFEDIT_region_RAM_end__ {Abs}
+                        0x20003fff          --   Gb  command line/config [2]
+__ICFEDIT_region_RAM_start__ {Abs}
+                        0x20000000          --   Gb  command line/config [2]
+__aeabi_idiv0           0x080008e1         Code  Gb  IntDivZer.o [4]
+__aeabi_llsr            0x08000bf5         Code  Gb  U64Shr.o [4]
+__aeabi_memcpy4         0x08000719         Code  Wk  ABImemcpy.o [4]
+__aeabi_uidiv           0x0800074d         Code  Gb  I32DivModFast.o [4]
+__aeabi_uidivmod        0x0800074d         Code  Gb  I32DivModFast.o [4]
+__cmain                 0x08000ea5         Code  Gb  cmain.o [4]
+__exit                  0x08000ed9   0x14  Code  Gb  exit.o [5]
+__iar_copy_init3        0x08000e1d   0x30  Code  Gb  copy_init3.o [4]
+__iar_data_init3        0x08000e4d   0x28  Code  Gb  data_init.o [4]
+__iar_program_start     0x08000efd         Code  Gb  cstartup_M.o [4]
+__low_level_init        0x08000ebf    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x08000000         Data  Gb  startup_stm32f072xb.o [1]
+_call_main              0x08000eb1         Code  Gb  cmain.o [4]
+_exit                   0x08000ecd         Code  Gb  cexit.o [4]
+_main                   0x08000ebb         Code  Gb  cmain.o [4]
+exit                    0x08000ec3    0x8  Code  Gb  exit.o [3]
+main                    0x08000c15   0x66  Code  Gb  main.o [1]
+pFlash                  0x20000000   0x20  Data  Gb  stm32f0xx_hal_flash.o [1]
+uwTick                  0x20000030    0x4  Data  Gb  stm32f0xx_hal.o [1]
+
+
+[1] = C:\Users\engenharia\Documents\Diego Moreno\Projetos\STM32F0\Exemplos\NUCLEO-F072RB_flash_eeprom\EWARM\NUCLEO-F072RB_flash_eeprom\Obj
+[2] = command line
+[3] = dl6M_tlf.a
+[4] = rt6M_tl.a
+[5] = shb_l.a
+
+  3 880 bytes of readonly  code memory
+     72 bytes of readonly  data memory
+  1 076 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

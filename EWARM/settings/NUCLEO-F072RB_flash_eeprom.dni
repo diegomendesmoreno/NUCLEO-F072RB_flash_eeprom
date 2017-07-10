@@ -2,7 +2,7 @@
 stlinkserialNo=5639E3C9
 stlinkfoundProbes=
 [DebugChecksum]
-Checksum=-1800764461
+Checksum=102391495
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -43,6 +43,7 @@ ITMlogFile=$PROJ_DIR$\ITM.log
 Fmt0=uint16_t[3]	4	0
 Fmt1=uint32_t[3]	4	0
 Fmt2=unsigned int[4]	4	0
+Fmt3=unsigned short[3]	4	0
 [watch_formats]
 Fmt0={W}42:Address	4	0
 [Trace2]
